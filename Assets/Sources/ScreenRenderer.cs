@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class ScreenRenderer : MonoBehaviour
 {
-    private Image Image;
+    private SpriteRenderer Renderer;
+
     private int Width;
     private int Height;
 
@@ -13,16 +13,16 @@ public class ScreenRenderer : MonoBehaviour
 
     private void Awake()
     {
-        Image = GetComponent<Image>();
-        Width = Mathf.RoundToInt(Screen.width / SimulationSettings.RenderScale);
-        Height = Mathf.RoundToInt(Screen.height / SimulationSettings.RenderScale);
+        Renderer = GetComponent<SpriteRenderer>();
+        Width = SimulationSettings.Resolution.x;
+        Height = SimulationSettings.Resolution.y;
 
         Texture = new Texture2D(Width, Height);
 
         Texture.filterMode = FilterMode.Point;
 
         ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height), Vector2.zero);
-        Image.sprite = ImageSprite;
+        Renderer.sprite = ImageSprite;
     }
 
     public void RenderCellAtTexture(Cell cell)
@@ -33,6 +33,6 @@ public class ScreenRenderer : MonoBehaviour
     public void UpdateScreen()
     {
         Texture.Apply();
-        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height), Vector2.zero);
+        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height),Vector2.zero);
     }
 }

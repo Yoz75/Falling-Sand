@@ -43,8 +43,8 @@ public class Simulation : MonoBehaviour
     {
         PaintBrush = new Brush(this);
 
-        Width = Mathf.RoundToInt(Screen.width / SimulationSettings.RenderScale);
-        Height = Mathf.RoundToInt(Screen.height / SimulationSettings.RenderScale);    
+        Width = SimulationSettings.Resolution.x;
+        Height = SimulationSettings.Resolution.y;    
 
         Cells = new Dictionary<Vector2Int, Cell>(Width * Height);
 
