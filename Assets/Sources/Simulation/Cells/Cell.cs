@@ -23,15 +23,13 @@ public abstract class Cell
 
     public abstract void OnTick(CellNeighbors neighbors);
 
-    public void SwapPositions(Cell other)
+    public static void SwapPositions(Cell self, Cell other)
     {
-        Vector2Int tempPosition = other.Position;
-        other.Position = Position;
-        Position = tempPosition;
+        Vector2Int tempPosition = self.Position;
+        self.Position = other.Position;
+        other.Position = tempPosition;
 
-        Simulation.CellMatrix[other.Position] = other;
-        Simulation.CellMatrix[Position] = this;
-
-        Position = -Vector2Int.one;
+        Simulation.NextFrame[other.Position] = other;
+        Simulation.NextFrame[self.Position] = self;
     }
 }

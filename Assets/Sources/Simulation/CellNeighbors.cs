@@ -1,6 +1,5 @@
-using UnityEngine;
 
-public class CellNeighbors 
+public struct CellNeighbors 
 {
     public Cell Up;
     public Cell UpRight;

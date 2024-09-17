@@ -14,8 +14,8 @@ public class ScreenRenderer : MonoBehaviour
     private void Awake()
     {
         Image = GetComponent<Image>();
-        Width = Screen.width / SimulationSettings.RenderScale;
-        Height = Screen.height / SimulationSettings.RenderScale;
+        Width = Mathf.RoundToInt(Screen.width / SimulationSettings.RenderScale);
+        Height = Mathf.RoundToInt(Screen.height / SimulationSettings.RenderScale);
 
         Texture = new Texture2D(Width, Height);
 

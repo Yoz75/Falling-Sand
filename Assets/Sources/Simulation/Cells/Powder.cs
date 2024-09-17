@@ -12,9 +12,7 @@ public class Powder : Cell
     {
         if(neighbors.Down is VoidCell)
         {
-            neighbors.Down.SwapPositions(neighbors.Down);
-
+            SwapPositions(this, neighbors.Down);
         }
-            neighbors.Down.Color = Color.red;
     }
 }

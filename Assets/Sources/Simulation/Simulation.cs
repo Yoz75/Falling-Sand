@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
-
+using System.Linq;
+using System;
 
 public class Simulation : MonoBehaviour
 {
-
     public class Brush
     {
         private Simulation Simulation;
@@ -30,17 +29,13 @@ public class Simulation : MonoBehaviour
 
     public const string SimulationTag = "Simulation";
 
-    public static Dictionary<Vector2Int, Cell> CellMatrix;
+    public static Dictionary<Vector2Int, Cell> NextFrame;
 
     [SerializeField] private ScreenRenderer Renderer;
 
     private Dictionary<Vector2Int, Cell> Cells;
 
-    Brush PaintBrush;
-
-    private IEnumerator RenderEnumerator;
-
-    private int X, Y;
+    private Brush PaintBrush;
 
     private int Width, Height;
 
@@ -48,8 +43,8 @@ public class Simulation : MonoBehaviour
     {
         PaintBrush = new Brush(this);
 
-        Width = Screen.width / SimulationSettings.RenderScale;
-        Height = Screen.height / SimulationSettings.RenderScale;    
+        Width = Mathf.RoundToInt(Screen.width / SimulationSettings.RenderScale);
+        Height = Mathf.RoundToInt(Screen.height / SimulationSettings.RenderScale);    
 
         Cells = new Dictionary<Vector2Int, Cell>(Width * Height);
 
@@ -70,7 +65,7 @@ public class Simulation : MonoBehaviour
                     Cells[cellPosition] = new VoidCell();
                 }
 
-                if(Random.value < 0.01 && Cells[cellPosition] is not Wall)
+                if(UnityEngine.Random.value < 0.01 && Cells[cellPosition] is not Wall)
                 {
                     Cells[cellPosition] = new Powder();
                 }
@@ -80,119 +75,68 @@ public class Simulation : MonoBehaviour
             }
         }
 
-        CellMatrix = Cells;
-
-        StartCoroutine(UpdateSimulation());
+        NextFrame = Cells;
     }
 
-    private IEnumerator UpdateSimulation()
+    private void Update()
     {
-        int pixelsToRenderCount;
-        int pixelsPerFrame;
-        int otherPixels;
-        int renderedPixels = 0;
-        while(true)
-        {
-            UpdateCells();
-            pixelsToRenderCount = Width * Height;
-            pixelsPerFrame = pixelsToRenderCount / SimulationSettings.UpdatesPerSecond;
-            otherPixels = pixelsToRenderCount - pixelsPerFrame * SimulationSettings.UpdatesPerSecond;
-
-            while(renderedPixels < pixelsToRenderCount - otherPixels)
-            {
-                RenderCells(pixelsPerFrame);
-                renderedPixels += pixelsPerFrame;
-                yield return null;
-            }
-
-
-            RenderCells(otherPixels);
-
-            renderedPixels = 0;
-            X = 0;
-            Y = 0;
-
-            ApplyRender();
-            yield return new WaitForSeconds(1 / SimulationSettings.UpdatesPerSecond);
-        }
+        UpdateCells();
+        RenderCells();
     }
 
-    private void RenderCells(int cellsCount)
+    private void RenderCells()
     {
-        int renderedCells = 0;
-
-        Vector2Int cellPosition = new Vector2Int();
-        while(X < Width)
+        Vector2Int cellPosition = new();
+        for(int y = 0; y < Height; y++)
         {
-            Y = 0;
-            if(renderedCells >= cellsCount)
+            for(int x = 0; x < Width; x++)
             {
-                break;
+                cellPosition.x = x;
+                cellPosition.y = y;
+
+                Renderer.RenderCellAtTexture(Cells[cellPosition]);
             }
-
-            while(Y < Height)
-            {
-                cellPosition.x = X;
-                cellPosition.y = Y;
-                if(renderedCells >= cellsCount)
-                {
-                    break;
-                }
-
-                Render(Cells[cellPosition]);
-                renderedCells++;
-                Y++;
-            }
-            X++;
         }
-
-        void Render(Cell cell)
-        {
-            Renderer.RenderCellAtTexture(cell);
-        }
-    }
-
-    private void ApplyRender()
-    {
         Renderer.UpdateScreen();
     }
 
     private void UpdateCells()
     {
-
-        Vector2Int cellPosition = new Vector2Int();
-        for(int x = 0; x < Width; x++)
+        //NextFrame = Cells.ToDictionary(entry => entry.Key, entry => entry.Value);
+        Vector2Int cellPosition = new();
+        for(int y = 0; y < Height; y++)
         {
-            for(int y = 0; y < Height; y++)
+            for(int x = 0; x < Width; x++)
             {
                 cellPosition.x = x;
                 cellPosition.y = y;
 
-                if(Cells[cellPosition].Position == -Vector2Int.one)
-                {
-                    Cells[cellPosition] = new VoidCell();
-                    Cells[cellPosition].Position = new Vector2Int(x, y);
-                    Cells[cellPosition].Init();
-                }
-
                 if(Cells[cellPosition].IsRequireNeighborsOnTick)
                 {
-                    CellNeighbors neighbors = new CellNeighbors();
-                    neighbors.Up = Cells[new Vector2Int(x, y +- 1)];
-                    neighbors.UpRight = Cells[new Vector2Int(x + 1, y - 1)];
-                    neighbors.Right = Cells[new Vector2Int(x + 1, y)];
-                    neighbors.RightDown = Cells[new Vector2Int(x + 1, y + 1)];
-                    neighbors.Down = Cells[new Vector2Int(x, y + 1)];
-                    neighbors.DownLeft = Cells[new Vector2Int(x - 1, y + 1)];
-                    neighbors.Left = Cells[new Vector2Int(x - 1, y)];
-                    neighbors.LeftUp = Cells[new Vector2Int(x - 1, y - 1)];
-                    Cells[cellPosition].OnTick(neighbors);
+                    Cells[cellPosition].OnTick(GetNeighborsAt(cellPosition));
                 }
                 else
                 {
-                    Cells[cellPosition].OnTick(null);
+                    Cells[cellPosition].OnTick(default(CellNeighbors));
                 }
             }
         }
+        //Cells = NextFrame.ToDictionary(entry => entry.Key, entry => entry.Value);
+    }
+
+    private CellNeighbors GetNeighborsAt(Vector2Int position)
+    {
+        CellNeighbors neighbors = new CellNeighbors();
+
+        neighbors.Up = Cells[new Vector2Int(position.x, position.y + 1)];
+        neighbors.UpRight = Cells[new Vector2Int(position.x + 1, position.y + 1)];
+        neighbors.Right = Cells[new Vector2Int(position.x + 1, position.y)];
+        neighbors.RightDown = Cells[new Vector2Int(position.x + 1, position.y - 1)];
+        neighbors.Down = Cells[new Vector2Int(position.x, position.y - 1)];
+        neighbors.DownLeft = Cells[new Vector2Int(position.x - 1, position.y - 1)];
+        neighbors.Left = Cells[new Vector2Int(position.x - 1, position.y)];
+        neighbors.LeftUp = Cells[new Vector2Int(position.x - 1, position.y + 1)];
+
+        return neighbors;
     }
 }
