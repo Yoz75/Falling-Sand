@@ -10,6 +10,8 @@ public abstract class Cell
         set;
     }
 
+    public bool CanBeDeleted;
+
     public Color DecorColor;
 
     public Vector2Int Position;
@@ -28,7 +30,7 @@ public abstract class Cell
         self.Position = other.Position;
         other.Position = tempPosition;
 
-        Simulation.NextFrame[other.Position] = other;
-        Simulation.NextFrame[self.Position] = self;
+        Simulation.Cells[other.Position] = other;
+        Simulation.Cells[self.Position] = self;
     }
 }

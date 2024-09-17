@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
-using System.Linq;
-using System;
+
 
 public class Simulation : MonoBehaviour
 {
@@ -29,11 +27,9 @@ public class Simulation : MonoBehaviour
 
     public const string SimulationTag = "Simulation";
 
-    public static Dictionary<Vector2Int, Cell> NextFrame;
+    public static Dictionary<Vector2Int, Cell> Cells;
 
     [SerializeField] private ScreenRenderer Renderer;
-
-    private Dictionary<Vector2Int, Cell> Cells;
 
     private Brush PaintBrush;
 
@@ -74,8 +70,6 @@ public class Simulation : MonoBehaviour
                 Cells[cellPosition].Init();
             }
         }
-
-        NextFrame = Cells;
     }
 
     private void Update()
