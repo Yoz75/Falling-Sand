@@ -121,9 +121,9 @@ public class Simulation : MonoBehaviour
         CellNeighbors neighbors = new CellNeighbors();
 
         neighbors.Up = Cells[new Vector2Int(position.x, position.y + 1)];
-        neighbors.UpRight = Cells[new Vector2Int(position.x + 1, position.y + 1)];
+        neighbors.RightUp = Cells[new Vector2Int(position.x + 1, position.y + 1)];
         neighbors.Right = Cells[new Vector2Int(position.x + 1, position.y)];
-        neighbors.RightDown = Cells[new Vector2Int(position.x + 1, position.y - 1)];
+        neighbors.DownRight = Cells[new Vector2Int(position.x + 1, position.y - 1)];
         neighbors.Down = Cells[new Vector2Int(position.x, position.y - 1)];
         neighbors.DownLeft = Cells[new Vector2Int(position.x - 1, position.y - 1)];
         neighbors.Left = Cells[new Vector2Int(position.x - 1, position.y)];

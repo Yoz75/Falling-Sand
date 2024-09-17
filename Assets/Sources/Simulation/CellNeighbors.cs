@@ -1,10 +1,10 @@
 
-public struct CellNeighbors 
+public class CellNeighbors 
 {
     public Cell Up;
-    public Cell UpRight;
+    public Cell RightUp;
     public Cell Right;
-    public Cell RightDown;
+    public Cell DownRight;
     public Cell Down;
     public Cell DownLeft;
     public Cell Left;
