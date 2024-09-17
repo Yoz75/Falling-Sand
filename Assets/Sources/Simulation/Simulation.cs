@@ -102,7 +102,6 @@ public class Simulation : MonoBehaviour
 
     private void UpdateCells()
     {
-        //NextFrame = Cells.ToDictionary(entry => entry.Key, entry => entry.Value);
         Vector2Int cellPosition = new();
         for(int y = 0; y < Height; y++)
         {
@@ -117,11 +116,10 @@ public class Simulation : MonoBehaviour
                 }
                 else
                 {
-                    Cells[cellPosition].OnTick(default(CellNeighbors));
+                    Cells[cellPosition].OnTick(default);
                 }
             }
         }
-        //Cells = NextFrame.ToDictionary(entry => entry.Key, entry => entry.Value);
     }
 
     private CellNeighbors GetNeighborsAt(Vector2Int position)
