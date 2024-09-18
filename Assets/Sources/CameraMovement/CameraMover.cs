@@ -4,12 +4,15 @@ using UnityEngine;
 public class CameraMover : MonoBehaviour
 {
     [SerializeField] private float MoveSensitivity;
+    [SerializeField] private float ZoomSensitivity;
 
     private const int MouseWheelIndex = 2;
 
-    private const float BaseSensitivityMultiplier = 0.01f;
+    private const float BaseMoveSensitivityMultiplier = 0.01f;
 
     private Camera Camera;
+
+    private string ZoomAxis = "Zoom";
 
     private void Start()
     {
@@ -18,7 +21,7 @@ public class CameraMover : MonoBehaviour
 
     private void LateUpdate()
     {
-        if(Input.GetMouseButton(MouseWheelIndex) )
+        if(Input.GetMouseButton(MouseWheelIndex))
         {
             Vector2 rowBias = Input.mousePosition;
 
@@ -28,7 +31,13 @@ public class CameraMover : MonoBehaviour
             Vector3 bias = Camera.ScreenToWorldPoint(rowBias ) - Camera.ScreenToWorldPoint(screenCenter);
 
             Camera.transform.position += 
-                bias * MoveSensitivity * BaseSensitivityMultiplier;
+                bias * MoveSensitivity * BaseMoveSensitivityMultiplier;
+        }
+
+        if(Input.GetAxis(ZoomAxis) != 0)
+        {
+            Camera.orthographicSize += Input.GetAxis(ZoomAxis) * ZoomSensitivity;
+            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize, 0.1f, 1000f);
         }
     }
 }
