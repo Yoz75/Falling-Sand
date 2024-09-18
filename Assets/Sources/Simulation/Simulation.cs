@@ -88,19 +88,21 @@ public class Simulation : MonoBehaviour
                 cellPosition.x = x;
                 cellPosition.y = y;
 
-                Renderer.RenderCellAtTexture(Cells[cellPosition]);
+                Renderer.AddColorToRenderQueue(Cells[cellPosition].Color);
             }
         }
-        Renderer.UpdateScreen();
+        Renderer.RenderScreen();
     }
 
     private void UpdateCells()
     {
         Vector2Int cellPosition = new();
-        for(int y = 0; y < Height; y++)
+
+        for(int x = 0; x < Width; x++)
         {
-            for(int x = 0; x < Width; x++)
-            {
+            for(int y = 0; y < Height; y++)
+        {
+
                 cellPosition.x = x;
                 cellPosition.y = y;
 

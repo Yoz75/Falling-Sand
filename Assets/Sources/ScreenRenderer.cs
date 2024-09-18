@@ -11,6 +11,10 @@ public class ScreenRenderer : MonoBehaviour
     private Texture2D Texture;
     private Sprite ImageSprite;
 
+    Color32[] CellColors;
+
+    private int Index;
+
     private void Awake()
     {
         Renderer = GetComponent<SpriteRenderer>();
@@ -23,16 +27,21 @@ public class ScreenRenderer : MonoBehaviour
 
         ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height), Vector2.zero);
         Renderer.sprite = ImageSprite;
+
+        CellColors = new Color32[Width * Height];
     }
 
-    public void RenderCellAtTexture(Cell cell)
+    public void AddColorToRenderQueue(Color32 color)
     {
-        Texture.SetPixel(cell.Position.x, cell.Position.y, cell.Color);
+        CellColors[Index] = color;
+        Index++;
     }
 
-    public void UpdateScreen()
+    public void RenderScreen()
     {
+        Texture.SetPixels32(CellColors);
         Texture.Apply();
         ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height),Vector2.zero);
+        Index = 0;
     }
 }
