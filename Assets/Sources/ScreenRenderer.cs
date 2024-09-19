@@ -25,7 +25,7 @@ public class ScreenRenderer : MonoBehaviour
 
         Texture.filterMode = FilterMode.Point;
 
-        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height), Vector2.zero);
+        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height), new Vector2(0.5f, 0.5f), Width);
         Renderer.sprite = ImageSprite;
 
         CellColors = new Color32[Width * Height];
@@ -41,7 +41,7 @@ public class ScreenRenderer : MonoBehaviour
     {
         Texture.SetPixels32(CellColors);
         Texture.Apply();
-        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height),Vector2.zero);
+        ImageSprite = Sprite.Create(Texture, new Rect(0, 0, Width, Height),Vector2.zero, Width);
         Index = 0;
     }
 }

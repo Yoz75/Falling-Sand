@@ -1,29 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 public class Simulation : MonoBehaviour
 {
-    public class Brush
-    {
-        private Simulation Simulation;
-
-        public Brush(Simulation simulation)
-        {
-            Simulation = simulation;
-        }
-
-        public void SpawnCell<T>(Vector2Int position) where T : Cell, new()
-        {
-            Simulation.Cells[position] = new T();
-            Simulation.Cells[position].Init();
-        }
-
-        public void EraseCell(Vector2Int position)
-        {
-            SpawnCell<VoidCell>(position);
-        }
-    }
+    public event Action UpdatedSimulation;
 
     public const string SimulationTag = "Simulation";
 
@@ -31,7 +13,11 @@ public class Simulation : MonoBehaviour
 
     [SerializeField] private ScreenRenderer Renderer;
 
-    private Brush PaintBrush;
+    public IBrush PaintBrush
+    {
+        get;
+        private set;
+    }
 
     private int Width, Height;
 
@@ -55,6 +41,7 @@ public class Simulation : MonoBehaviour
                 if(x == 0 || y == 0 || x == Width-1 || y == Height-1)
                 {
                     Cells[cellPosition] = new Wall();
+                    Cells[cellPosition].CanBeDeleted = false;
                 }
                 else
                 {
@@ -76,6 +63,8 @@ public class Simulation : MonoBehaviour
     {
         UpdateCells();
         RenderCells();
+
+        UpdatedSimulation?.Invoke();
     }
 
     private void RenderCells()

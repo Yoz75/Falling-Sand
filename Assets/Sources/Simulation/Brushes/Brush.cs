@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class Brush : MonoBehaviour
+public class Brush : IBrush
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Simulation Simulation;
+
+    public Brush(Simulation simulation)
     {
-        
+        Simulation = simulation;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SpawnCell<T>(Vector2Int position) where T : Cell, new()
     {
-        
+        Simulation.Cells[position] = null;
+        Simulation.Cells[position] = new T();
+        Simulation.Cells[position].Position = position;
+        Simulation.Cells[position].Init();
+    }
+
+    public void EraseCell(Vector2Int position)
+    {
+        SpawnCell<VoidCell>(position);
     }
 }
