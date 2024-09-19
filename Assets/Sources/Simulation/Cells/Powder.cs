@@ -3,7 +3,7 @@ using UnityEngine;
 public class Powder : Cell
 {
 
-    protected float Fluidness = 0.05f;
+    protected float Fluidness = 0.5f;
 
     public override void Init()
     {
@@ -24,21 +24,16 @@ public class Powder : Cell
         {
             var value = random.NextDouble();
 
-            if(value >= Fluidness)
+            if(value <= Fluidness)
             {
                 SwapPositions(this, neighbors.DownLeft);
             }
         }
         else if(neighbors.Down is Powder && neighbors.DownRight is VoidCell)
         {
-            var value = random.Next(0, 2);
+            var value = random.NextDouble();
 
-            if(value == 0)
-            {
-                return;
-            }
-
-            if(value == 1)
+            if(value <= Fluidness)
             {
                 SwapPositions(this, neighbors.DownRight);
             }

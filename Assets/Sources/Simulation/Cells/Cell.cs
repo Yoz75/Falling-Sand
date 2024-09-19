@@ -10,7 +10,19 @@ public abstract class Cell
         set;
     }
 
-    public bool CanBeDeleted;
+    public string Name
+    {
+        get;
+        protected set;
+    } = "Cell";
+
+    public string Description
+    {
+        get;
+        protected set;
+    } = "Literally base class for all Cells";
+
+    public bool CanBeDeleted = true;
 
     public Color DecorColor;
 
