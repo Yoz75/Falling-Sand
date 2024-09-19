@@ -1,26 +1,14 @@
 
+using System;
 using UnityEngine;
 
-
-public abstract class Cell
+public class Cell
 {
     public Color Color
     {
         get;
         set;
     }
-
-    public string Name
-    {
-        get;
-        protected set;
-    } = "Cell";
-
-    public string Description
-    {
-        get;
-        protected set;
-    } = "Literally base class for all Cells";
 
     public bool CanBeDeleted = true;
 
@@ -32,9 +20,15 @@ public abstract class Cell
 
     public bool IsRequireNeighborsOnTick = false;
 
-    public abstract void Init();
+    public virtual void Init()
+    {
+        throw new NotImplementedException("YOU ARE NOT OVERRIDED INIT METHOD, DUMBASS");
+    }
 
-    public abstract void OnTick(CellNeighbors neighbors);
+    public virtual void OnTick(CellNeighbors neighbors)
+    {
+        throw new NotImplementedException("YOU ARE NOT OVERRIDED ONTICK METHOD, DUMBASS");
+    }
 
     public static void SwapPositions(Cell self, Cell other)
     {
