@@ -6,6 +6,9 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private float MoveSensitivity;
     [SerializeField] private float ZoomSensitivity;
 
+    [SerializeField] private float MinZoom = 0.01f;
+    [SerializeField] private float MaxZoom = 1000f;
+
     private const int MouseWheelIndex = 2;
 
     private const float BaseMoveSensitivityMultiplier = 0.01f;
@@ -37,7 +40,7 @@ public class CameraMover : MonoBehaviour
         if(Input.GetAxis(ZoomAxis) != 0)
         {
             Camera.orthographicSize += Input.GetAxis(ZoomAxis) * ZoomSensitivity;
-            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize, 0.1f, 1000f);
+            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize, MinZoom, MaxZoom);
         }
     }
 }
