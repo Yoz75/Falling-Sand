@@ -30,6 +30,11 @@ public class Drawer : MonoBehaviour
             Vector2 position = Camera.ScreenToWorldPoint(Input.mousePosition);
             Collider2D hitCollider = Physics2D.OverlapPoint(position);
 
+            if(hitCollider == null)
+            {
+                return;
+            }
+
             GameObject gameObject = hitCollider.gameObject;
             Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
             Rect rect = sprite.textureRect;
